@@ -2,41 +2,57 @@ package racingcar.IO;
 
 import camp.nextstep.edu.missionutils.Console;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * 사용자의 입력을 받고 유효성을 검사하는 클래스입니다.
+ */
 public class Input {
 
-    public static String[] readCarNames() {
-        System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)");
+    private static final int MAX_NAME_LENGTH = 5;
+    private static final String NAME_DELIMITER = ",";
+
+
+    public List<String> readCarNames() {
         String input = Console.readLine();
+        String[] names = input.split(NAME_DELIMITER);
+        validateCarNames(names);
+        return Arrays.stream(names)
+                .map(String::trim)
+                .collect(Collectors.toList());
+    }
 
-        String[] carNames = input.split(",");
 
-        for (String name : carNames) {
-            if (name.isBlank() || name.length() > 5) {
-                throw new IllegalArgumentException("자동차 이름은 1~5자여야 합니다.");
+    private void validateCarNames(String[] names) {
+        if (names.length == 0) {
+            throw new IllegalArgumentException("자동차 이름을 입력해주세요.");
+        }
+        for (String name : names) {
+            String trimmedName = name.trim();
+            if (trimmedName.isEmpty() || trimmedName.length() > MAX_NAME_LENGTH) {
+                throw new IllegalArgumentException("자동차 이름은 1자 이상 5자 이하만 가능합니다.");
             }
         }
-
-        return carNames;
     }
 
 
-
-    public static int readAttempts() {
-        System.out.println("시도할 횟수는 몇 회인가요?");
+    public int readMoveCount() {
         String input = Console.readLine();
-
-        if (!input.matches("\\d+")) {
-            throw new IllegalArgumentException("숫자를 입력해야 합니다.");
-        }
-
-        int attempts = Integer.parseInt(input);
-
-        if (attempts <= 0) {
-            throw new IllegalArgumentException("시도 횟수는 0보다 커야 합니다.");
-        }
-
-        return attempts;
+        validateMoveCount(input);
+        return Integer.parseInt(input);
     }
 
 
+    private void validateMoveCount(String input) {
+        try {
+            int count = Integer.parseInt(input);
+            if (count < 1) {
+                throw new IllegalArgumentException("시도 횟수는 1 이상의 양수여야 합니다.");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("시도 횟수는 숫자여야 합니다.");
+        }
+    }
 }
