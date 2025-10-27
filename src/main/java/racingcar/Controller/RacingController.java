@@ -1,6 +1,7 @@
 package racingcar.Controller;
 
 import racingcar.Domain.Car;
+import racingcar.Domain.Game;
 import racingcar.IO.Input;
 import racingcar.IO.Output;
 
@@ -17,18 +18,29 @@ public class RacingController {
         this.output = new Output();
     }
 
-    /**
-     * 게임을 시작하고 전체 과정을 진행합니다.
-     */
+
     public void run() {
+        // 1. Get Car Names
         output.promptForCarNames();
         List<String> carNames = input.readCarNames();
         List<Car> cars = createCarsFromNames(carNames);
 
+        // 2. Get Move Count
         output.promptForMoveCount();
         int moveCount = input.readMoveCount();
 
+        // 3. Create and Run Game
+        Game game = new Game(cars);
+        output.printExecutionResultHeader();
 
+        for (int i = 0; i < moveCount; i++) {
+            game.playRound();
+            output.printRoundResult(game.getCars());
+        }
+
+        // 4. Print Winners
+        List<String> winners = game.getWinners();
+        output.printWinners(winners);
     }
 
 

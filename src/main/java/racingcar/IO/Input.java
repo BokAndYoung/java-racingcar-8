@@ -6,9 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * 사용자의 입력을 받고 유효성을 검사하는 클래스입니다.
- */
+
 public class Input {
 
     private static final int MAX_NAME_LENGTH = 5;
